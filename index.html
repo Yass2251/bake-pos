@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#35251f">
+  <title>BakePOS — Bakery Point of Sale</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#dashboard" aria-label="BakePOS Dashboard">
+        <span class="brand-mark">B</span>
+        <span>Bake<span class="brand-accent">POS</span><small>BAKERY MANAGEMENT</small></span>
+      </a>
+      <div class="store-chip">
+        <span class="store-icon">✦</span>
+        <span><strong id="sidebar-store-name">Ruang Roti</strong><small>Cabang utama</small></span>
+        <span class="status-dot"></span>
+      </div>
+      <p class="nav-label">MENU UTAMA</p>
+      <nav class="nav-menu" aria-label="Navigasi utama">
+        <button class="nav-link active" data-page="dashboard"><span>▦</span> Dashboard</button>
+        <button class="nav-link" data-page="kasir"><span>＋</span> Kasir POS</button>
+        <button class="nav-link" data-page="produk"><span>▤</span> Produk</button>
+        <button class="nav-link" data-page="stok"><span>◷</span> Stok & Kedaluwarsa</button>
+        <button class="nav-link" data-page="transaksi"><span>↗</span> Transaksi</button>
+        <button class="nav-link" data-page="laporan"><span>▥</span> Laporan</button>
+        <button class="nav-link" data-page="pengaturan"><span>⚙</span> Pengaturan</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="avatar">AS</div>
+        <div class="user-meta"><strong id="sidebar-cashier">Andi Saputra</strong><small>Administrator</small></div>
+        <span class="user-menu">•••</span>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="mobile-brand"><span class="brand-mark">B</span><strong>Bake<span class="brand-accent">POS</span></strong></div>
+        <div class="breadcrumb"><span>Ruang Roti</span><span class="crumb-sep">/</span><strong id="breadcrumb-current">Dashboard</strong></div>
+        <div class="topbar-right">
+          <span class="today" id="today-date"></span>
+          <button class="icon-button mobile-menu" id="mobile-menu" aria-label="Buka menu">☰</button>
+        </div>
+      </header>
+
+      <section class="page active" id="dashboard-page">
+        <div class="page-heading">
+          <div><p class="eyebrow">RINGKASAN TOKO</p><h1>Selamat datang kembali 👋</h1><p class="muted">Berikut ringkasan bisnis tokomu hari ini.</p></div>
+          <button class="button button-primary" data-go="kasir">＋ Transaksi Baru</button>
+        </div>
+        <div class="stat-grid">
+          <article class="stat-card"><div class="stat-top"><span class="stat-label">Omzet hari ini</span><span class="stat-icon icon-peach">↗</span></div><div class="stat-number" id="omzet-hari-ini">Rp0</div><div class="stat-foot"><span class="trend">●</span> Dari transaksi berhasil</div></article>
+          <article class="stat-card"><div class="stat-top"><span class="stat-label">Transaksi hari ini</span><span class="stat-icon icon-green">▣</span></div><div class="stat-number" id="jumlah-transaksi">0</div><div class="stat-foot">Transaksi selesai hari ini</div></article>
+          <article class="stat-card"><div class="stat-top"><span class="stat-label">Produk terjual</span><span class="stat-icon icon-blue">◈</span></div><div class="stat-number" id="jumlah-produk">0</div><div class="stat-foot">Total item terjual hari ini</div></article>
+          <article class="stat-card"><div class="stat-top"><span class="stat-label">Katalog produk</span><span class="stat-icon icon-yellow">♧</span></div><div class="stat-number" id="jumlah-katalog">0</div><div class="stat-foot">Jenis produk terdaftar</div></article>
+        </div>
+
+        <div class="dashboard-grid">
+          <section class="panel sales-panel">
+            <div class="panel-heading"><div><h2>Penjualan 7 hari terakhir</h2><p class="muted">Performa omzet toko</p></div><span class="panel-tag">7 hari</span></div>
+            <div class="chart" id="grafik-canvas" aria-label="Grafik penjualan tujuh hari"></div>
+          </section>
+          <section class="panel alert-panel">
+            <div class="panel-heading"><div><h2>Perlu perhatian</h2><p class="muted">Pantau kondisi produk</p></div><span class="alert-count" id="alert-count">0</span></div>
+            <div class="alert-list">
+              <div class="alert-row"><span class="alert-symbol low">!</span><div><strong>Stok menipis</strong><p id="stok-alert-text">Semua stok aman</p></div><button class="text-button" data-go="stok">Lihat</button></div>
+              <div class="alert-row"><span class="alert-symbol expiry">◷</span><div><strong>Mendekati kedaluwarsa</strong><p id="expiry-alert-text">Tidak ada peringatan</p></div><button class="text-button" data-go="stok">Lihat</button></div>
+            </div>
+          </section>
+        </div>
+
+        <section class="panel recent-panel">
+          <div class="panel-heading"><div><h2>Transaksi terbaru</h2><p class="muted">Aktivitas penjualan terkini</p></div><button class="text-button" data-go="transaksi">Lihat semua →</button></div>
+          <div class="table-wrap"><table><thead><tr><th>ID TRANSAKSI</th><th>WAKTU</th><th>ITEM</th><th>METODE</th><th>TOTAL</th><th>STATUS</th></tr></thead><tbody id="transaksi-list"></tbody></table></div>
+          <div class="empty-state" id="dashboard-empty">Belum ada transaksi. Mulai transaksi pertamamu di menu Kasir POS.</div>
+        </section>
+      </section>
+
+      <section class="page" id="kasir-page">
+        <div class="page-heading"><div><p class="eyebrow">POINT OF SALE</p><h1>Kasir POS</h1><p class="muted">Pilih produk dan proses pembayaran pelanggan.</p></div><span class="live-chip"><span></span> Kasir aktif</span></div>
+        <div class="pos-layout">
+          <section class="panel catalog-panel">
+            <div class="catalog-tools"><div class="search-wrap"><span>⌕</span><input id="search-produk" type="search" placeholder="Cari nama produk atau SKU..."></div><select id="filter-kategori" aria-label="Filter kategori"><option value="">Semua kategori</option><option value="roti">Roti</option><option value="donat">Donat</option><option value="pastry">Pastry</option><option value="kue">Kue & Cake</option><option value="cookies">Cookies</option><option value="minuman">Minuman</option></select></div>
+            <div class="catalog-subtitle"><h2>Pilih produk</h2><span id="jumlah-produk-tampil">0 produk</span></div>
+            <div class="product-grid" id="produk-grid"></div>
+          </section>
+          <aside class="panel cart-panel">
+            <div class="panel-heading"><div><h2>Keranjang</h2><p class="muted">Ringkasan pesanan</p></div><span class="cart-count" id="item-count">0</span></div>
+            <div class="cart-items" id="keranjang-list"></div>
+            <div class="cart-empty" id="keranjang-empty"><span>🛍</span><strong>Keranjang masih kosong</strong><p>Pilih produk di sebelah kiri untuk memulai.</p></div>
+            <div id="keranjang-content" hidden>
+              <div class="discount-field"><label for="diskon-persen">Diskon transaksi</label><div class="discount-input"><input id="diskon-persen" type="number" min="0" max="100" value="0"><span>%</span></div></div>
+              <div class="totals">
+                <div><span>Subtotal</span><strong id="subtotal-rupiah">Rp0</strong></div>
+                <div><span>Diskon</span><strong id="diskon-rupiah">Rp0</strong></div>
+                <div class="grand-total"><span>Total pembayaran</span><strong id="total-rupiah">Rp0</strong></div>
+              </div>
+              <button class="button button-primary checkout-button" id="checkout-btn">Lanjut ke pembayaran <span>→</span></button>
+              <button class="button button-ghost full-button" id="clear-cart-btn">Kosongkan keranjang</button>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="page" id="produk-page">
+        <div class="page-heading"><div><p class="eyebrow">KATALOG</p><h1>Kelola produk</h1><p class="muted">Atur produk, harga jual, dan ketersediaan stok.</p></div><button class="button button-primary" id="tambah-produk-btn">＋ Tambah produk</button></div>
+        <section class="panel">
+          <div class="table-toolbar"><div class="search-wrap"><span>⌕</span><input type="search" id="search-produk-admin" placeholder="Cari nama produk atau SKU..."></div><select id="filter-kategori-admin"><option value="">Semua kategori</option><option value="roti">Roti</option><option value="donat">Donat</option><option value="pastry">Pastry</option><option value="kue">Kue & Cake</option><option value="cookies">Cookies</option><option value="minuman">Minuman</option></select></div>
+          <div class="table-wrap"><table><thead><tr><th>PRODUK</th><th>SKU</th><th>KATEGORI</th><th>HARGA</th><th>STOK</th><th>KEDALUWARSA</th><th>AKSI</th></tr></thead><tbody id="produk-list"></tbody></table></div>
+          <div class="empty-state" id="produk-empty" hidden>Belum ada produk. Tambahkan produk baru.</div>
+        </section>
+        <div class="modal" id="modal-produk" aria-hidden="true"><div class="modal-card"><div class="modal-heading"><div><p class="eyebrow">KATALOG PRODUK</p><h2 id="product-modal-title">Tambah produk</h2></div><button class="icon-button" data-close="modal-produk" aria-label="Tutup">✕</button></div>
+          <form id="product-form" class="form-grid">
+            <label class="form-field full">Nama produk<input id="new-name" required maxlength="80" placeholder="Contoh: Roti Cokelat"></label>
+            <label class="form-field">SKU<input id="new-sku" required maxlength="20" placeholder="Contoh: ROT009"></label>
+            <label class="form-field">Kategori<select id="new-category"><option value="roti">Roti</option><option value="donat">Donat</option><option value="pastry">Pastry</option><option value="kue">Kue & Cake</option><option value="cookies">Cookies</option><option value="minuman">Minuman</option></select></label>
+            <label class="form-field">Harga jual (Rp)<input id="new-price" type="number" min="1" required placeholder="10000"></label>
+            <label class="form-field">Stok saat ini<input id="new-stock" type="number" min="0" required value="10"></label>
+            <label class="form-field">Satuan<input id="new-unit" value="pcs" required></label>
+            <label class="form-field">Batas minimal stok<input id="new-minimum" type="number" min="0" value="5" required></label>
+            <label class="form-field">Tanggal kedaluwarsa<input id="new-expiry" type="date" required></label>
+            <label class="form-field full">Emoji produk<input id="new-emoji" maxlength="8" value="🥐"></label>
+            <div class="form-actions full"><button class="button button-ghost" type="button" data-close="modal-produk">Batal</button><button class="button button-primary" type="submit">Simpan produk</button></div>
+          </form>
+        </div></div>
+      </section>
+
+      <section class="page" id="stok-page">
+        <div class="page-heading"><div><p class="eyebrow">INVENTARIS</p><h1>Stok & kedaluwarsa</h1><p class="muted">Pantau ketersediaan dan masa simpan produk.</p></div></div>
+        <div class="stat-grid compact-stats"><article class="stat-card"><div class="stat-label">Stok menipis</div><div class="stat-number" id="stock-low-count">0</div></article><article class="stat-card"><div class="stat-label">Stok habis</div><div class="stat-number" id="stock-out-count">0</div></article><article class="stat-card"><div class="stat-label">Kedaluwarsa / dekat</div><div class="stat-number" id="stock-expiry-count">0</div></article></div>
+        <section class="panel"><div class="table-toolbar"><select id="filter-kategori-stok"><option value="">Semua kategori</option><option value="roti">Roti</option><option value="donat">Donat</option><option value="pastry">Pastry</option><option value="kue">Kue & Cake</option><option value="cookies">Cookies</option><option value="minuman">Minuman</option></select><select id="filter-status-stok"><option value="">Semua status</option><option value="aman">Aman</option><option value="menipis">Menipis</option><option value="habis">Habis</option><option value="dekat">Mendekati kedaluwarsa</option><option value="kedaluwarsa">Kedaluwarsa</option></select></div>
+          <div class="table-wrap"><table><thead><tr><th>PRODUK</th><th>STOK</th><th>BATAS MINIMAL</th><th>KEDALUWARSA</th><th>SISA HARI</th><th>STATUS</th><th>PENYESUAIAN</th></tr></thead><tbody id="stok-list"></tbody></table></div>
+        </section>
+      </section>
+
+      <section class="page" id="transaksi-page">
+        <div class="page-heading"><div><p class="eyebrow">RIWAYAT</p><h1>Transaksi</h1><p class="muted">Periksa transaksi dan detail pembayaran.</p></div></div>
+        <section class="panel"><div class="table-toolbar"><div class="search-wrap"><span>⌕</span><input id="cari-id" type="search" placeholder="Cari ID transaksi..."></div><select id="filter-metode"><option value="">Semua metode</option><option value="tunai">Tunai</option><option value="qris">QRIS</option><option value="debit">Debit</option></select><select id="filter-status-transaksi"><option value="">Semua status</option><option value="berhasil">Berhasil</option></select><select id="filter-periode"><option value="semua">Semua waktu</option><option value="hari-ini">Hari ini</option><option value="7-hari">7 hari terakhir</option><option value="bulan-ini">Bulan ini</option></select></div>
+          <div class="table-wrap"><table><thead><tr><th>ID TRANSAKSI</th><th>TANGGAL</th><th>KASIR</th><th>ITEM</th><th>TOTAL</th><th>METODE</th><th>STATUS</th><th>DETAIL</th></tr></thead><tbody id="riwayat-list"></tbody></table></div><div class="empty-state" id="transaksi-empty" hidden>Belum ada transaksi untuk filter ini.</div></section>
+      </section>
+
+      <section class="page" id="laporan-page">
+        <div class="page-heading"><div><p class="eyebrow">ANALITIK TOKO</p><h1>Laporan penjualan</h1><p class="muted">Ringkasan performa penjualan berdasarkan periode.</p></div><button class="button button-secondary" id="export-csv">↓ Ekspor CSV</button></div>
+        <section class="panel report-filter"><label for="filter-periode-laporan">Periode laporan</label><select id="filter-periode-laporan"><option value="hari-ini">Hari ini</option><option value="7-hari">7 hari terakhir</option><option value="bulan-ini">Bulan ini</option><option value="kustom">Rentang tanggal</option></select><input type="date" id="tanggal-awal" hidden><input type="date" id="tanggal-akhir" hidden></section>
+        <div class="stat-grid"><article class="stat-card"><div class="stat-label">Total omzet</div><div class="stat-number" id="total-omzet">Rp0</div></article><article class="stat-card"><div class="stat-label">Jumlah transaksi</div><div class="stat-number" id="jumlah-transaksi-laporan">0</div></article><article class="stat-card"><div class="stat-label">Produk terjual</div><div class="stat-number" id="total-produk-terjual">0</div></article><article class="stat-card"><div class="stat-label">Rata-rata transaksi</div><div class="stat-number" id="rata-rata">Rp0</div></article></div>
+        <section class="panel"><div class="panel-heading"><div><h2>Penjualan per kategori</h2><p class="muted">Kontribusi kategori pada periode terpilih</p></div></div><div id="grafik-kategori" class="category-report"></div></section>
+      </section>
+
+      <section class="page" id="pengaturan-page">
+        <div class="page-heading"><div><p class="eyebrow">PREFERENSI</p><h1>Pengaturan</h1><p class="muted">Kelola identitas toko dan preferensi BakePOS.</p></div></div>
+        <form id="settings-form">
+          <section class="panel settings-panel"><div class="panel-heading"><div><h2>Identitas toko</h2><p class="muted">Informasi yang digunakan pada aplikasi.</p></div></div><div class="form-grid">
+            <label class="form-field">Nama toko<input id="nama-toko" required></label><label class="form-field">Nama kasir<input id="nama-kasir" required></label><label class="form-field full">Alamat toko<input id="alamat-toko"></label><label class="form-field">Nomor kontak<input id="kontak-toko"></label><label class="form-field">Batas minimal stok<input id="batas-minimal-default" type="number" min="0"></label><label class="form-field">Peringatan kedaluwarsa (hari)<input id="hari-peringatan" type="number" min="0"></label><label class="form-field full">Pesan penutup struk<input id="pesan-akhir"></label>
+          </div><div class="form-actions"><button class="button button-primary" type="submit">Simpan pengaturan</button></div></section>
+        </form>
+        <section class="panel danger-zone"><div><h2>Data aplikasi</h2><p class="muted">Data tersimpan di browser yang sedang digunakan.</p></div><div class="danger-actions"><button class="button button-secondary" id="pulih-demo">Pulihkan data demo</button><button class="button button-danger" id="hapus-semua">Hapus data transaksi & produk</button></div></section>
+      </section>
+      <footer class="footer"><span>BakePOS</span><span>Bakery management, made simple.</span></footer>
+    </main>
+  </div>
+
+  <div class="modal" id="modal-checkout" aria-hidden="true">
+    <div class="modal-card checkout-modal">
+      <div class="modal-heading"><div><p class="eyebrow">PEMBAYARAN</p><h2>Konfirmasi pembayaran</h2><p class="muted">Periksa total sebelum menyelesaikan transaksi.</p></div><button class="icon-button" data-close="modal-checkout" aria-label="Tutup">✕</button></div>
+      <div class="payment-total"><span>Total yang harus dibayar</span><strong id="total-modal">Rp0</strong></div>
+      <fieldset class="payment-methods"><legend>Metode pembayaran</legend><label class="payment-option"><input type="radio" name="payment" value="tunai" checked><span>💵</span><span><strong>Tunai</strong><small>Uang cash</small></span></label><label class="payment-option"><input type="radio" name="payment" value="qris"><span>▦</span><span><strong>QRIS</strong><small>Pembayaran digital</small></span></label><label class="payment-option"><input type="radio" name="payment" value="debit"><span>▤</span><span><strong>Debit</strong><small>Kartu debit</small></span></label></fieldset>
+      <div id="tunai-section"><label class="form-field">Uang diterima (Rp)<input id="uang-diterima" type="number" min="0" placeholder="Masukkan nominal uang"></label><div class="change-row"><span>Kembalian</span><strong id="kembalian-rupiah">Rp0</strong></div></div>
+      <div id="qris-debit-section" hidden><div class="notice">Pastikan pembayaran pelanggan sudah diterima sebelum konfirmasi.</div></div>
+      <div class="form-actions"><button class="button button-ghost" data-close="modal-checkout">Batal</button><button class="button button-primary" id="konfirmasi-bayar">Konfirmasi pembayaran</button></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
